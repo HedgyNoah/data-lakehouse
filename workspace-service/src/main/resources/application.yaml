@@ -1,0 +1,20 @@
+server:
+  port: 8083
+  servlet:
+    context-path: /workspace
+spring:
+  application:
+    name: workspace-service
+  data:
+    mongodb:
+      uri: mongodb://root:root@localhost:27017/workspace-service?authSource=admin
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/data-lakehouse
+
+app:
+  services:
+    identity:
+      url: http://localhost:8080/identity

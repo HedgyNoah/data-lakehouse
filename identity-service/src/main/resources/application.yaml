@@ -1,0 +1,41 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /identity
+
+spring:
+  application:
+    name: identity-service
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3308/identity}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SECURITY_CONNECTION:http://localhost:8180/realms/data-lakehouse}
+  kafka:
+    bootstrap-servers: ${KAFKA_SERVER:localhost:9094}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+idp:
+  url: ${IDP_CONNECTION:http://localhost:8180}
+  client-id: data-lakehouse-app
+  client-secret: n0VGAFcJAcoavzPFkRFIuim7q1LTbyXj
+  id: 015df956-d1bd-45fa-aa14-e9d3dde05c8d
+  realm-name: data-lakehouse
+  roles:
+    user:
+      id: 7df4ea2e-1351-4672-be18-80aa6d1e430e
+      name: ROLE_USER
+    admin:
+      id: 42842b0f-1a4c-4d52-88c0-0379ccd5dd8d
+      name: ROLE_ADMIN

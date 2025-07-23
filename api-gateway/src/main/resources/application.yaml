@@ -1,0 +1,48 @@
+server:
+  port: 8888
+
+app:
+  api-prefix: /api
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay=
+      routes:
+        - id: identity_service
+          uri: http://localhost:8080
+          predicates:
+            - Path=${app.api-prefix}/identity/**
+          filters:
+            - StripPrefix=1
+        - id: notification_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=${app.api-prefix}/notification/**
+          filters:
+            - StripPrefix=1
+        - id: workspace_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=${app.api-prefix}/workspace/**
+          filters:
+            - StripPrefix=1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8180/realms/data-lakehouse
+      client:
+        registration:
+          gateway:
+            provider: keycloak
+            client-id: data-lakehouse-app
+            client-secret: n0VGAFcJAcoavzPFkRFIuim7q1LTbyXj
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/realms/data-lakehouse
